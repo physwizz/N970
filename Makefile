@@ -310,10 +310,11 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 # "make" in the configured kernel build directory always uses that.
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
-#ARCH		?= $(SUBARCH)
-#CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
-ARCH            ?= arm64
-CROSS_COMPILE	?= $(srctree)/toolchain/gcc-cfp/gcc-cfp-jopp-only/aarch64-linux-android-4.9/bin/aarch64-linux-android-
+
+ARCH		?= $(SUBARCH)
+# CROSS_COMPILE	?= $(srctree)/toolchain/gcc-cfp/gcc-cfp-jopp-only/aarch64-linux-android-4.9/bin/aarch64-linux-android-
+
+CROSS_COMPILE=/home/grahame/toolchains/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
@@ -375,8 +376,12 @@ HOST_LOADLIBES := $(HOST_LFS_LIBS)
 AS		= $(CROSS_COMPILE)as
 LD		= $(CROSS_COMPILE)ld
 LDGOLD		= $(CROSS_COMPILE)ld.gold
-#CC		= $(CROSS_COMPILE)gcc
-CC              = $(srctree)/toolchain/clang/host/linux-x86/clang-4639204-cfp-jopp/bin/clang
+
+# CC              = $(srctree)/toolchain/clang/host/linux-x86/clang-r383902-jopp/bin/clang
+
+CC= $(srctree)/toolchain/prebuilts_clang_host_linux-x86_clang-r383902-jopp-11/bin/clang
+
+
 CPP		= $(CC) -E
 AR		= $(CROSS_COMPILE)ar
 NM		= $(CROSS_COMPILE)nm
@@ -511,9 +516,16 @@ endif
 
 ifeq ($(cc-name),clang)
 ifneq ($(CROSS_COMPILE),)
-#CLANG_TRIPLE	?= $(CROSS_COMPILE)
-CLANG_TRIPLE	?= $(srctree)/toolchain/clang/host/linux-x86/clang-4639204-cfp-jopp/bin/aarch64-linux-gnu-
-CLANG_FLAGS	:= --target=$(notdir $(CLANG_TRIPLE:%-=%))
+
+# CLANG_TRIPLE	?= $(srctree)/toolchain/clang/host/linux-x86/clang-r383902-jopp/bin/aarch64-linux-gnu-
+
+CLANG_TRIPLE	?= $(srctree)/toolchain/clang/host/linux-x86/clang-r383902-jopp/bin/aarch64-linux-gnu-
+
+CLANG_FLAGS	+= --target=$(notdir $(CLANG_TRIPLE:%-=%))
+ifeq ($(shell $(srctree)/scripts/clang-android.sh $(CC) $(CLANG_FLAGS)), y)
+$(error "Clang with Android --target detected. Did you specify CLANG_TRIPLE?")
+endif
+
 GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
 CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)
 GCC_TOOLCHAIN	:= $(realpath $(GCC_TOOLCHAIN_DIR)/..)
