@@ -1,9 +1,11 @@
+
 #!/bin/bash
 
 
-export PLATFORM_VERSION=11
-export ANDROID_MAJOR_VERSION=r
+make clean && make mrproper
+
+export PLATFORM_VERSION=13
 export ARCH=arm64
 
-make ARCH=arm64 exynos9820-d1_defconfig
+make ARCH=arm64 physwizz_defconfig
 make ARCH=arm64 -j64
