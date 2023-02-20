@@ -313,6 +313,10 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 
 ARCH		?= $(SUBARCH)
 # CROSS_COMPILE	?= $(srctree)/toolchain/gcc-cfp/gcc-cfp-jopp-only/aarch64-linux-android-4.9/bin/aarch64-linux-android-
+<<<<<<< HEAD
+=======
+CROSS_COMPILE=/home/physwizz/aarch64-linux-android-4.9/bin/aarch64-linux-android-
+>>>>>>> a75a22dc1... updaet readme.md
 
 CROSS_COMPILE=/home/grahame/toolchains/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-
 
